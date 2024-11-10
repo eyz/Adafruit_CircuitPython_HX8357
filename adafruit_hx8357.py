@@ -93,7 +93,9 @@ class HX8357(BusDisplay):
         # Data mode: DC pin high
         self.bus.send(True, data)
 
-    def set_vertical_scroll(self, top_fixed: int, scroll_area: int, bottom_fixed: int) -> None:
+    def set_vertical_scroll(
+        self, top_fixed: int, scroll_area: int, bottom_fixed: int
+    ) -> None:
         """
         Define the vertical scrolling area of the display.
 
