@@ -122,4 +122,3 @@ class HX8357(BusDisplay):
         self.send_command(0x39)  # _SETSCROLLSTART
         # Send start_address (16 bits)
         self.send_data(bytes([(start_address >> 8) & 0xFF, start_address & 0xFF]))
-      
