@@ -71,3 +71,53 @@ class HX8357(BusDisplay):
 
     def __init__(self, bus: FourWire, **kwargs) -> None:
         super().__init__(bus, _INIT_SEQUENCE, **kwargs)
+
+    def send_command(self, command: int) -> None:
+        """
+        Send a single command byte to the display.
+
+        Parameters:
+            command (int): The command byte to send.
+        """
+        # Command mode: DC pin low
+        self.bus.send(False, bytes([command]))
+        # No data is sent with the command itself
+
+    def send_data(self, data: bytes) -> None:
+        """
+        Send data bytes to the display.
+
+        Parameters:
+            data (bytes): The data bytes to send.
+        """
+        # Data mode: DC pin high
+        self.bus.send(True, data)
+
+    def set_vertical_scroll(self, top_fixed: int, scroll_area: int, bottom_fixed: int) -> None:
+        """
+        Define the vertical scrolling area of the display.
+
+        Parameters:
+            top_fixed (int): Number of fixed rows at the top.
+            scroll_area (int): Number of rows in the scrolling area.
+            bottom_fixed (int): Number of fixed rows at the bottom.
+        """
+        self.send_command(0x37)  # _SETVERTICALSCROLL
+        # Send top_fixed (16 bits)
+        self.send_data(bytes([(top_fixed >> 8) & 0xFF, top_fixed & 0xFF]))
+        # Send scroll_area (16 bits)
+        self.send_data(bytes([(scroll_area >> 8) & 0xFF, scroll_area & 0xFF]))
+        # Send bottom_fixed (16 bits)
+        self.send_data(bytes([(bottom_fixed >> 8) & 0xFF, bottom_fixed & 0xFF]))
+
+    def set_scroll_start_address(self, start_address: int) -> None:
+        """
+        Set the vertical scroll start address.
+
+        Parameters:
+            start_address (int): The starting row address for scrolling.
+        """
+        self.send_command(0x39)  # _SETSCROLLSTART
+        # Send start_address (16 bits)
+        self.send_data(bytes([(start_address >> 8) & 0xFF, start_address & 0xFF]))
+      
